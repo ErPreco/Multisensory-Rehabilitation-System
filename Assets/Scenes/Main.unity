@@ -164,9 +164,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Balloons
   balloonPrefab: {fileID: 8650049259720895654, guid: 9ca1a61840c7bb7408198e7e9ac4cc91, type: 3}
-  halfMovementDuration: 4
+  upDownDuration: 4
   holdingDuration: 1
-  balloonPeriod: 1
+  balloonSpeed: 1.5
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
