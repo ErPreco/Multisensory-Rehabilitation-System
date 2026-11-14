@@ -167,6 +167,7 @@ MonoBehaviour:
   upDownDuration: 4
   holdingDuration: 1
   balloonSpeed: 1.5
+  screenHeightAmplitudeRatio: 0.5
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

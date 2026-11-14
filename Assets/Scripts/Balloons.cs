@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,18 +7,20 @@ public class Balloons : MonoBehaviour
 {
     [SerializeField]
     private GameObject balloonPrefab;
-    [SerializeField, Range(2, 8)]
-    private float upDownDuration = 4;
-    [SerializeField, Range(0, 5)]
-    private float holdingDuration = 1;
-    [SerializeField, Range(1, 1.5f)]
+    [SerializeField, Range(2, 8), Tooltip("Duration in seconds of the individual up and down movement (not the total duration)")]
+    private int upDownDuration = 4;
+    [SerializeField, Range(0, 5), Tooltip("Duration in seconds of the individual up and down holding position (not the total duration)")]
+    private int holdingDuration = 1;
+    [SerializeField, Range(1, 1.5f), Tooltip("Horizontal speed of the balloons")]
     private float balloonSpeed = 1;
+    [SerializeField, Range(0.4f, 0.9f), Tooltip("Percentage of the screen used to display the squared-off wave of the balloons")]
+    private float screenHeightAmplitudeRatio = 0.7f;
 
     private readonly List<Transform> ballonsTransformList = new();
 
-    async void Start()
+    void Start()
     {
-        await SpawnBalloons();
+        StartCoroutine(SpawnBalloons());
     }
 
     void Update()
@@ -30,26 +33,27 @@ public class Balloons : MonoBehaviour
         }
     }
 
-    private async Awaitable SpawnBalloons()
+    private IEnumerator SpawnBalloons()
     {
+        WaitForSeconds waitForSeconds1 = new(1);
         int time = 0;
 
         while (true)
         {
             Transform balloonTransform = Instantiate(balloonPrefab, transform).transform;
             Vector3 balloonPosition = balloonTransform.position;
-            balloonPosition.y = GetBallonPositionByFunction(time);
+            balloonPosition.y = GetBallonSpawnPosition(time);
             balloonTransform.position = balloonPosition;
 
             ballonsTransformList.Add(balloonTransform);
 
             time++;
 
-            await Awaitable.WaitForSecondsAsync(1);
+            yield return waitForSeconds1;
         }
     }
 
-    private float GetBallonPositionByFunction(float _time)
+    private float GetBallonSpawnPosition(float _time)
     {
         // Calculate y of a squared-off wave at time, where
         //       ___         ___
@@ -64,10 +68,9 @@ public class Balloons : MonoBehaviour
         //
         // Mathf.PingPong travels along k/2, and the plateaus are clamped at -t1/2 and t1/2
 
-        float multiplier = 2;
-
         float y = Mathf.PingPong(_time + holdingDuration * 0.5f, upDownDuration + holdingDuration);
         float halfHolding = holdingDuration * 0.5f;
+        float multiplier = Camera.main.orthographicSize * 2 * screenHeightAmplitudeRatio / upDownDuration;
         return multiplier * (Mathf.Clamp(y, halfHolding, halfHolding + upDownDuration) - halfHolding - upDownDuration * 0.5f);
     }
 }
