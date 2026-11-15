@@ -5,25 +5,22 @@ using UnityEngine;
 
 public class Balloons : MonoBehaviour
 {
+    public float BalloonsWindow { get; private set; }
+
     [SerializeField]
     private GameObject balloonPrefab;
     [SerializeField, Range(2, 8), Tooltip("Duration in seconds of the individual up and down movement (not the total duration)")]
-    private int upDownDuration = 4;
+    private uint upDownDuration = 4;
     [SerializeField, Range(0, 5), Tooltip("Duration in seconds of the individual up and down holding position (not the total duration)")]
-    private int holdingDuration = 1;
+    private uint holdingDuration = 1;
     [SerializeField, Range(1, 1.5f), Tooltip("Horizontal speed of the balloons")]
     private float balloonSpeed = 1;
     [SerializeField, Range(0.4f, 0.9f), Tooltip("Percentage of the screen used to display the squared-off wave of the balloons")]
     private float screenHeightAmplitudeRatio = 0.5f;
     [SerializeField]
-    private int reps = 10;
+    private uint reps = 10;
 
     private readonly List<Transform> ballonsTransformList = new();
-
-    void OnValidate()
-    {
-        if (reps < 0) reps = 0;
-    }
 
     void Start()
     {
@@ -43,9 +40,9 @@ public class Balloons : MonoBehaviour
     private IEnumerator SpawnBalloons()
     {
         WaitForSeconds waitForSeconds1 = new(1);
-        int balloonsCounter = 0;
-        int balloonsPerRep = (upDownDuration + holdingDuration) * 2;
-        int totalBalloonsCount = 1 + balloonsPerRep * reps;
+        uint balloonsCounter = 0;
+        uint balloonsPerRep = (upDownDuration + holdingDuration) * 2;
+        uint totalBalloonsCount = 1 + balloonsPerRep * reps;
 
         while (totalBalloonsCount > 0)
         {
@@ -82,6 +79,7 @@ public class Balloons : MonoBehaviour
         float halfHolding = holdingDuration * 0.5f;
         float multiplier = Camera.main.orthographicSize * 2 * screenHeightAmplitudeRatio / upDownDuration;
         float y = multiplier * (Mathf.Clamp(pingPongY, halfHolding, halfHolding + upDownDuration) - halfHolding - upDownDuration * 0.5f);
+        BalloonsWindow = multiplier * upDownDuration;
 
         float ratio = (float)Screen.width / Screen.height;
         float offScreenOffset = 2;
