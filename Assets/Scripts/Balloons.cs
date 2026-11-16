@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Balloons : MonoBehaviour
@@ -8,7 +9,7 @@ public class Balloons : MonoBehaviour
     public float BalloonsWindow { get; private set; }
 
     [SerializeField]
-    private GameObject balloonPrefab;
+    private Balloon balloonPrefab;
     [SerializeField, Range(2, 8), Tooltip("Duration in seconds of the individual up and down movement (not the total duration)")]
     private uint upDownDuration = 4;
     [SerializeField, Range(0, 5), Tooltip("Duration in seconds of the individual up and down holding position (not the total duration)")]
@@ -20,20 +21,35 @@ public class Balloons : MonoBehaviour
     [SerializeField]
     private uint reps = 10;
 
-    private readonly List<Transform> ballonsTransformList = new();
+    private readonly Queue<Transform> ballonsTransformQueue = new();
+    private float windowMultiplier;
+    private float screenRatio;
+    private float offScreenOffset;
 
     void Start()
     {
+        windowMultiplier = Camera.main.orthographicSize * 2 * screenHeightAmplitudeRatio / upDownDuration;
+        screenRatio = (float)Screen.width / Screen.height;
+        offScreenOffset = 2;
+        BalloonsWindow = windowMultiplier * upDownDuration;
+
         StartCoroutine(SpawnBalloons());
     }
 
     void Update()
     {
-        foreach (Transform balloonTransform in ballonsTransformList)
+        foreach (Transform balloonTransform in ballonsTransformQueue)
         {
             Vector3 ballonPosition = balloonTransform.position;
             ballonPosition.x -= balloonSpeed * Time.deltaTime;
             balloonTransform.position = ballonPosition;
+        }
+
+        float despawnLimit = -1 * (Camera.main.orthographicSize * screenRatio + offScreenOffset);
+        if (ballonsTransformQueue.Count > 0 && ballonsTransformQueue.ElementAt(0).position.x <= despawnLimit)
+        {
+            Transform balloonTransform = ballonsTransformQueue.Dequeue();
+            Destroy(balloonTransform.gameObject);
         }
     }
 
@@ -46,15 +62,16 @@ public class Balloons : MonoBehaviour
 
         while (totalBalloonsCount > 0)
         {
+            // TODO: move at the end, check for (huh?) errors
+            yield return waitForSeconds1;
+
             Transform balloonTransform = Instantiate(balloonPrefab, transform).transform;
             balloonTransform.position = GetBallonSpawnPosition(balloonsCounter);
 
-            ballonsTransformList.Add(balloonTransform);
+            ballonsTransformQueue.Enqueue(balloonTransform);
 
             balloonsCounter++;
             totalBalloonsCount--;
-
-            yield return waitForSeconds1;
         }
     }
 
@@ -77,13 +94,9 @@ public class Balloons : MonoBehaviour
 
         float pingPongY = Mathf.PingPong(_time + holdingDuration * 0.5f, upDownDuration + holdingDuration);
         float halfHolding = holdingDuration * 0.5f;
-        float multiplier = Camera.main.orthographicSize * 2 * screenHeightAmplitudeRatio / upDownDuration;
-        float y = multiplier * (Mathf.Clamp(pingPongY, halfHolding, halfHolding + upDownDuration) - halfHolding - upDownDuration * 0.5f);
-        BalloonsWindow = multiplier * upDownDuration;
+        float y = windowMultiplier * (Mathf.Clamp(pingPongY, halfHolding, halfHolding + upDownDuration) - halfHolding - upDownDuration * 0.5f);
 
-        float ratio = (float)Screen.width / Screen.height;
-        float offScreenOffset = 2;
-        float x = Camera.main.orthographicSize * ratio + offScreenOffset;
+        float x = Camera.main.orthographicSize * screenRatio + offScreenOffset;
 
         return new(x, y);
     }
