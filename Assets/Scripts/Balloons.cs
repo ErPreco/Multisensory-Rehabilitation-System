@@ -20,11 +20,17 @@ public class Balloons : MonoBehaviour
     private float screenHeightAmplitudeRatio = 0.5f;
     [SerializeField]
     private uint reps = 10;
+    [SerializeField]
+    private Patient patient;
+    [SerializeField]
+    private Teensy teensy;
 
     private readonly Queue<Transform> ballonsTransformQueue = new();
     private float windowMultiplier;
     private float screenRatio;
     private float offScreenOffset;
+    private bool playHaptics;
+    private float t;
 
     void Start()
     {
@@ -34,6 +40,7 @@ public class Balloons : MonoBehaviour
         BalloonsWindow = windowMultiplier * upDownDuration;
 
         StartCoroutine(SpawnBalloons());
+        StartCoroutine(PlayHaptics());
     }
 
     void Update()
@@ -51,6 +58,18 @@ public class Balloons : MonoBehaviour
             Transform balloonTransform = ballonsTransformQueue.Dequeue();
             Destroy(balloonTransform.gameObject);
         }
+
+        if (playHaptics)
+        {
+            float pingPongY = Mathf.PingPong(t + holdingDuration * 0.5f, upDownDuration + holdingDuration);
+            float halfHolding = holdingDuration * 0.5f;
+            float y = windowMultiplier * (Mathf.Clamp(pingPongY, halfHolding, halfHolding + upDownDuration) - halfHolding);
+
+            ERMActuator ERMActuator = new(y, windowMultiplier * upDownDuration);
+            teensy.Send(ERMActuator);
+
+            t += Time.deltaTime;
+        }
     }
 
     private IEnumerator SpawnBalloons()
@@ -62,9 +81,6 @@ public class Balloons : MonoBehaviour
 
         while (totalBalloonsCount > 0)
         {
-            // TODO: move at the end, check for (huh?) errors
-            yield return waitForSeconds1;
-
             Transform balloonTransform = Instantiate(balloonPrefab, transform).transform;
             balloonTransform.position = GetBallonSpawnPosition(balloonsCounter);
 
@@ -72,7 +88,21 @@ public class Balloons : MonoBehaviour
 
             balloonsCounter++;
             totalBalloonsCount--;
+
+            yield return waitForSeconds1;
         }
+    }
+
+    private IEnumerator PlayHaptics()
+    {
+        float balloonSpawnX = Camera.main.orthographicSize * screenRatio + offScreenOffset;
+        float patientMarkerX = patient.MarkerPosition.x;
+        t = (balloonSpawnX - patientMarkerX) / balloonSpeed;
+
+        yield return new WaitForSeconds(t);
+
+        playHaptics = true;
+        t = 0;
     }
 
     private Vector2 GetBallonSpawnPosition(float _time)

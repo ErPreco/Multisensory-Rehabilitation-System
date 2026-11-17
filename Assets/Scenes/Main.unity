@@ -262,6 +262,9 @@ MonoBehaviour:
   balloonSpeed: 1.5
   screenHeightAmplitudeRatio: 0.5
   reps: 10
+  patient: {fileID: 2032548701}
+  teensy: {fileID: 1199387678}
+  playHaptics: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

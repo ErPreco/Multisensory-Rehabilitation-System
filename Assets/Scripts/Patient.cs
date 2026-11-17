@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Patient : MonoBehaviour
 {
+    public Vector3 MarkerPosition => marker.position;
+
     [SerializeField]
     private Teensy teensy;
     [SerializeField]
