@@ -6,35 +6,41 @@ public class AuditoryMovementOutput : MovementOutput
     protected override float StartDelay => playTime;
 
     [SerializeField]
-    private ToggleAudio toggleAudio;
+    private PDToggleMetroData toggleMetroData;
     [SerializeField]
-    private Frequency frequency;
+    private PDToggleAudioData toggleAudioData;
     [SerializeField]
-    private Patient patient;
+    private PDFrequencyData frequencyData;
+    [SerializeField, Range(0, 300)]
+    private uint minFrequency = 150;
+    [SerializeField, Range(200, 800)]
+    private uint maxFrequency = 500;
 
     private float playTime;
 
     protected override void OnStart()
     {
-        float screenRatio = (float)Screen.width / Screen.height;
-        float offScreenOffset = 2;
-        float offScreenX = Camera.main.orthographicSize * screenRatio + offScreenOffset;
-        float patientMarkerX = patient.MarkerPosition.x;
-        playTime = (offScreenX - patientMarkerX) / Movement.Speed;
+        playTime = (OffScreenX - PatientMarkerX) / Movement.Speed;
+        maxFrequency = (uint)Mathf.Max(minFrequency, maxFrequency);
+
+        toggleMetroData.Send(true);
     }
 
     protected override void OnBegin()
     {
-        toggleAudio.Send(true);
+        toggleMetroData.Send(false);
+        toggleAudioData.Send(true);
     }
 
     protected override void OnTick(float _, float _value)
     {
-        frequency.Send((int)(_value / Movement.WindowHeight * 432));
+        uint frequencyDelta = maxFrequency - minFrequency;
+        int frequency = (int)(minFrequency + _value / Movement.WindowHeight * frequencyDelta);
+        frequencyData.Send(frequency);
     }
 
     protected override void OnFinish()
     {
-        toggleAudio.Send(false);
+        toggleAudioData.Send(false);
     }
 }

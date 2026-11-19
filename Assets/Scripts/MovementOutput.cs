@@ -5,6 +5,8 @@ public abstract class MovementOutput
 {
     public bool IsFinished { get; private set; }
     protected VerticalMovementSO Movement { get; private set; }
+    protected float OffScreenX { get; private set; }
+    protected float PatientMarkerX { get; private set; }
     protected virtual float StartDelay => 0;
     protected virtual bool ZeroCentered => false;
     /// <summary>True while the output still has something to do after the movement ended.</summary>
@@ -16,9 +18,15 @@ public abstract class MovementOutput
     private float nextTick;
     private bool hasBegun;
 
-    public void Start(VerticalMovementSO _movement)
+    public void Start(VerticalMovementSO _movement, Patient _patient)
     {
         Movement = _movement;
+
+        // TODO: make it constant wrt bips (e.g. 4), independent from the screen size (ultrawide => 15 bips)
+        PatientMarkerX = _patient.MarkerPosition.x;
+        float screenRatio = (float)Screen.width / Screen.height;
+        float screenHalfWidth = Camera.main.orthographicSize * screenRatio;
+        OffScreenX = (Mathf.Floor((screenHalfWidth - PatientMarkerX) / Movement.Speed) + 2) * Movement.Speed + PatientMarkerX;
 
         OnStart();
     }

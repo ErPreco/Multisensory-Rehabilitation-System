@@ -188,6 +188,13 @@ MonoBehaviour:
   m_Address: /PLAY
   m_Arguments:
   - m_Object: {fileID: 1252001260}
+    m_Component: {fileID: 1252001263}
+    m_MemberType: 2
+    m_MemberValueType: Boolean
+    m_MemberName: Value
+    m_Output:
+      rid: 4220249331797327959
+  - m_Object: {fileID: 1252001260}
     m_Component: {fileID: 1252001262}
     m_MemberType: 2
     m_MemberValueType: Boolean
@@ -198,6 +205,10 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 4220249331797327953
+      type: {class: ArgumentOutputBool, ns: Unity.Media.Osc.Arguments, asm: Unity.Media.Osc.Components}
+      data:
+        m_SendAsTags: 0
+    - rid: 4220249331797327959
       type: {class: ArgumentOutputBool, ns: Unity.Media.Osc.Arguments, asm: Unity.Media.Osc.Components}
       data:
         m_SendAsTags: 0
@@ -274,6 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
   movement: {fileID: 11400000, guid: f2a88d23f43eac44a993fe912a12823f, type: 2}
+  patient: {fileID: 2032548701}
   playVisual: 1
   visualMovementOutput:
     tickRate: 1
@@ -282,13 +294,14 @@ MonoBehaviour:
   hapticMovementOutput:
     tickRate: 50
     teensy: {fileID: 1199387678}
-    patient: {fileID: 2032548701}
   playAudio: 1
   auditoryMovementOutput:
     tickRate: 100
-    toggleAudio: {fileID: 1252001262}
-    frequency: {fileID: 632316792}
-    patient: {fileID: 2032548701}
+    toggleMetroData: {fileID: 1252001263}
+    toggleAudioData: {fileID: 1252001262}
+    frequencyData: {fileID: 632316792}
+    minFrequency: 200
+    maxFrequency: 600
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1045,6 +1058,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1252001261}
+  - component: {fileID: 1252001263}
   - component: {fileID: 1252001262}
   m_Layer: 0
   m_Name: Play
@@ -1080,6 +1094,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc7d5588b8d41984ca1e0ddec15d6a1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToggleAudio
+--- !u!114 &1252001263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252001260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f9f2d93c1b4ae042be685bea81de259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PDToggleMetroData
 --- !u!1 &1619590361
 GameObject:
   m_ObjectHideFlags: 0

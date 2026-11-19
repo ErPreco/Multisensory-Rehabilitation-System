@@ -7,6 +7,8 @@ public class KneeMovement : MonoBehaviour
 {
     [SerializeField]
     private VerticalMovementSO movement;
+    [SerializeField]
+    private Patient patient;
 
     [Header("Visual Output")]
     [SerializeField]
@@ -40,7 +42,7 @@ public class KneeMovement : MonoBehaviour
 
         foreach (MovementOutput output in outputs)
         {
-            output.Start(movement);
+            output.Start(movement, patient);
         }
 
         float t = 0;

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -12,14 +11,6 @@ public class VisualMovementOutput : MovementOutput
     private Balloon balloonPrefab;
 
     private readonly Queue<Transform> ballonsTransformQueue = new();
-    float offScreenX;
-
-    protected override void OnStart()
-    {
-        float screenRatio = (float)Screen.width / Screen.height;
-        float offScreenOffset = 2;
-        offScreenX = Camera.main.orthographicSize * screenRatio + offScreenOffset;
-    }
 
     protected override void OnUpdate()
     {
@@ -30,7 +21,7 @@ public class VisualMovementOutput : MovementOutput
             balloonTransform.position = ballonPosition;
         }
 
-        float despawnLimit = -offScreenX;
+        float despawnLimit = -OffScreenX;
         while (ballonsTransformQueue.Count > 0 && ballonsTransformQueue.Peek().position.x <= despawnLimit)
         {
             Object.Destroy(ballonsTransformQueue.Dequeue().gameObject);
@@ -39,7 +30,7 @@ public class VisualMovementOutput : MovementOutput
 
     protected override void OnTick(float _, float _value)
     {
-        Vector3 spawnPosition = new(offScreenX, _value, 0);
+        Vector3 spawnPosition = new(OffScreenX, _value, 0);
         Balloon balloon = Object.Instantiate(balloonPrefab, spawnPosition, Quaternion.identity);
 
         ballonsTransformQueue.Enqueue(balloon.transform);
