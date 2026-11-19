@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PD
   button: {fileID: 981750395}
---- !u!1 &234071664
+--- !u!1 &310938197
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -220,22 +220,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 234071665}
-  - component: {fileID: 234071666}
+  - component: {fileID: 310938198}
+  - component: {fileID: 310938199}
   m_Layer: 0
-  m_Name: Balloons
+  m_Name: KneeMovement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &234071665
+--- !u!4 &310938198
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 234071664}
+  m_GameObject: {fileID: 310938197}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -244,27 +244,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &234071666
+--- !u!114 &310938199
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 234071664}
+  m_GameObject: {fileID: 310938197}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e159870a054a2946802d3063c94efb4, type: 3}
+  m_Script: {fileID: 11500000, guid: 981824929012c9c4788023b5192593e6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Balloons
-  balloonPrefab: {fileID: 8988182394545809032, guid: 9ca1a61840c7bb7408198e7e9ac4cc91, type: 3}
-  upDownDuration: 4
-  holdingDuration: 1
-  balloonSpeed: 1.5
-  screenHeightAmplitudeRatio: 0.5
-  reps: 10
-  patient: {fileID: 2032548701}
-  teensy: {fileID: 1199387678}
-  playHaptics: 1
+  m_EditorClassIdentifier: Assembly-CSharp::Movement
+  movement:
+    upDownDuration: 4
+    holdingDuration: 1
+    screenHeightAmplitudeRatio: 0.5
+    reps: 2
+    speed: 1.5
+  playVisual: 1
+  visualMovementOutput:
+    tickRate: 1
+    balloonPrefab: {fileID: 8988182394545809032, guid: 9ca1a61840c7bb7408198e7e9ac4cc91, type: 3}
+  playHaptic: 1
+  hapticMovementOutput:
+    tickRate: 50
+    teensy: {fileID: 1199387678}
+    patient: {fileID: 2032548701}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,7 +1204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Patient
   teensy: {fileID: 1199387678}
   marker: {fileID: 1206107867}
-  balloons: {fileID: 234071666}
+  balloons: {fileID: 0}
   colliderRadius: 0.15
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -1209,6 +1215,6 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 2032548700}
-  - {fileID: 234071665}
+  - {fileID: 310938198}
   - {fileID: 1738097298}
   - {fileID: 1952874810}
