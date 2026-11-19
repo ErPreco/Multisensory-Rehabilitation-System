@@ -6,19 +6,25 @@ using UnityEngine;
 public class KneeMovement : MonoBehaviour
 {
     [SerializeField]
-    private VerticalMovement movement;
+    private VerticalMovementSO movement;
 
-    [Header("Visual Movement")]
+    [Header("Visual Output")]
     [SerializeField]
     private bool playVisual;
     [SerializeField]
     private VisualMovementOutput visualMovementOutput;
 
-    [Header("Haptic Movement")]
+    [Header("Haptic Output")]
     [SerializeField]
     private bool playHaptic;
     [SerializeField]
     private HapticMovementOutput hapticMovementOutput;
+
+    [Header("Auditory Output")]
+    [SerializeField]
+    private bool playAudio;
+    [SerializeField]
+    private AuditoryMovementOutput auditoryMovementOutput;
 
     void Start()
     {
@@ -30,6 +36,7 @@ public class KneeMovement : MonoBehaviour
         List<MovementOutput> outputs = new();
         if (playVisual) outputs.Add(visualMovementOutput);
         if (playHaptic) outputs.Add(hapticMovementOutput);
+        if (playAudio) outputs.Add(auditoryMovementOutput);
 
         foreach (MovementOutput output in outputs)
         {
@@ -41,6 +48,7 @@ public class KneeMovement : MonoBehaviour
         {
             foreach (MovementOutput output in outputs)
             {
+                if (output.IsFinished) continue;
                 output.Update(t);
             }
 

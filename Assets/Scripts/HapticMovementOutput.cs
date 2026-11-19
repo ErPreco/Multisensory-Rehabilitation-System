@@ -23,7 +23,7 @@ public class HapticMovementOutput : MovementOutput
 
     protected override void OnTick(float _, float _value)
     {
-        ERMActuator ERMActuator = new(_value, Movement.WindowMultiplier * Movement.UpDownDuration);
+        ERMActuator ERMActuator = new(_value, Movement.WindowHeight);
         teensy.Send(ERMActuator);
     }
 }

@@ -9,7 +9,7 @@ public class Patient : MonoBehaviour
     [SerializeField]
     private Transform marker;
     [SerializeField]
-    private Balloons balloons;
+    private VerticalMovementSO movement;
     [SerializeField, Range(0.05f, 0.3f)]
     private float colliderRadius = 0.15f;
 
@@ -18,6 +18,8 @@ public class Patient : MonoBehaviour
     void OnEnable()
     {
         teensy.OnFlexChanged += Teensy_OnFlexChanged;
+
+        nextPosition = marker.position;
     }
 
     void Update()
@@ -36,7 +38,7 @@ public class Patient : MonoBehaviour
 
     private void Teensy_OnFlexChanged(object _sender, Teensy.OnFlexChangedEventArgs _event)
     {
-        float y = _event.Value * balloons.BalloonsWindow - balloons.BalloonsWindow * 0.5f;
+        float y = _event.Value * movement.WindowHeight - movement.WindowHeight * 0.5f;
         nextPosition = new(marker.position.x, y, 0);
     }
 

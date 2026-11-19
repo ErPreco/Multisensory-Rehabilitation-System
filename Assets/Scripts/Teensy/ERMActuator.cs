@@ -16,7 +16,6 @@ public class ERMActuator : ISerializer
     public string Serialize()
     {
         int actuatorValue = Mathf.RoundToInt(Mathf.Clamp01(value / maxValue) * actuatorMaxValue);
-        Debug.Log(actuatorValue);
         return $"TH,ERM:{actuatorValue}";
     }
 }

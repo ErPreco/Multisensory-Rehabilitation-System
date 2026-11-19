@@ -1,14 +1,15 @@
 using UnityEngine;
 
-[System.Serializable]
-public class VerticalMovement
+[CreateAssetMenu(fileName = "VerticalMovementSO", menuName = "ScriptableObjects/VerticalMovement")]
+public class VerticalMovementSO : ScriptableObject
 {
     public uint UpDownDuration => upDownDuration;
     public uint HoldingDuration => holdingDuration;
     public uint Reps => reps;
     public float Speed => speed;
     public uint TotalDuration => (upDownDuration + holdingDuration) * 2 * reps;
-    public float WindowMultiplier => Camera.main.orthographicSize * 2 * screenHeightAmplitudeRatio / upDownDuration;
+    public float ScreenMultiplier => Camera.main.orthographicSize * 2 * screenHeightAmplitudeRatio / upDownDuration;
+    public float WindowHeight => ScreenMultiplier * UpDownDuration;
 
     [SerializeField, Tooltip("Duration in seconds of the individual up and down movement (not the total duration).")]
     private uint upDownDuration;
@@ -40,7 +41,7 @@ public class VerticalMovement
         float pingPongY = Mathf.PingPong(_time + holdingDuration * 0.5f, upDownDuration + holdingDuration);
         float halfHolding = holdingDuration * 0.5f;
         float zeroCenterOffset = _zeroCentered ? upDownDuration * 0.5f : 0;
-        float y = WindowMultiplier * (Mathf.Clamp(pingPongY, halfHolding, halfHolding + upDownDuration) - halfHolding - zeroCenterOffset);
+        float y = ScreenMultiplier * (Mathf.Clamp(pingPongY, halfHolding, halfHolding + upDownDuration) - halfHolding - zeroCenterOffset);
 
         return y;
     }
